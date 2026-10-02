@@ -53,20 +53,6 @@ func (q *Queries) GetPendingMessage(ctx context.Context, id int64) (PendingMessa
 	return i, err
 }
 
-const getRandomMessage = `-- name: GetRandomMessage :one
-SELECT id, content, created_at 
-FROM messages 
-ORDER BY RANDOM() 
-LIMIT 1
-`
-
-func (q *Queries) GetRandomMessage(ctx context.Context) (Message, error) {
-	row := q.db.QueryRowContext(ctx, getRandomMessage)
-	var i Message
-	err := row.Scan(&i.ID, &i.Content, &i.CreatedAt)
-	return i, err
-}
-
 const listPendingMessages = `-- name: ListPendingMessages :many
 SELECT id, content, status, created_at 
 FROM pending_messages 
@@ -103,22 +89,27 @@ func (q *Queries) ListPendingMessages(ctx context.Context) ([]PendingMessage, er
 }
 
 const listRandomMessages = `-- name: ListRandomMessages :many
-SELECT id, content, created_at
+SELECT id, content
 FROM messages
 ORDER BY RANDOM()
 LIMIT ?
 `
 
-func (q *Queries) ListRandomMessages(ctx context.Context, limit int64) ([]Message, error) {
+type ListRandomMessagesRow struct {
+	ID      int64  `json:"id"`
+	Content string `json:"content"`
+}
+
+func (q *Queries) ListRandomMessages(ctx context.Context, limit int64) ([]ListRandomMessagesRow, error) {
 	rows, err := q.db.QueryContext(ctx, listRandomMessages, limit)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Message
+	var items []ListRandomMessagesRow
 	for rows.Next() {
-		var i Message
-		if err := rows.Scan(&i.ID, &i.Content, &i.CreatedAt); err != nil {
+		var i ListRandomMessagesRow
+		if err := rows.Scan(&i.ID, &i.Content); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
