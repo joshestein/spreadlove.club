@@ -35,14 +35,14 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
 
   loginButton.disabled = true;
   loginButton.textContent = "Logging in...";
-  loginError.classList.add("hidden");
+  loginError.hidden = true;
 
   try {
     credentials = btoa(username + ":" + password);
     const response = await authenticatedFetch("/api/admin/pending");
 
-    document.getElementById("login-form").classList.add("hidden");
-    document.getElementById("admin-app").classList.remove("hidden");
+    document.getElementById("login-form").hidden = true;
+    document.getElementById("admin-app").hidden = false;
 
     const messages = await response.json();
     displayMessages(messages);
@@ -52,7 +52,7 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
       error.message === "Unauthorized"
         ? "Invalid username or password"
         : "Login failed. Please try again.";
-    loginError.classList.remove("hidden");
+    loginError.hidden = false;
     loginButton.disabled = false;
     loginButton.textContent = "Login";
   }
