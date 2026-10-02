@@ -1,11 +1,8 @@
 :root {
-  --bg: #fbfaf4;
   --surface: #fff;
   --accent: #ac4518;
-  --text: #333;
   --muted: #666;
   --border: #dadcde;
-  --success: #2e7d32;
   --danger: #c33;
   --danger-bg: #fee;
   --radius: 4px;
@@ -34,7 +31,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100svh;
-  background-color: var(--bg);
+  background-color: #fbfaf4;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
@@ -52,7 +49,7 @@ body {
   text-align: center;
 }
 
-button#refresh {
+#refresh {
   display: inline-flex;
   padding: 0.5rem;
   background: transparent;
@@ -68,7 +65,7 @@ button#refresh {
 
 .btn {
   padding: 0.5rem 1.25rem;
-  border: 1px solid var(--accent);
+  border: 1px solid transparent;
   border-radius: var(--radius);
   background: var(--accent);
   color: #fff;
@@ -114,7 +111,7 @@ h1 {
   color: var(--accent);
 }
 
-h1#message {
+#message {
   margin-bottom: 1rem;
 }
 
@@ -139,6 +136,5 @@ p {
 
   .btn {
     font: 1.5rem sans-serif;
-    padding: 0.2em 1em;
   }
 }
