@@ -1,9 +1,3 @@
--- name: GetRandomMessage :one
-SELECT id, content, created_at 
-FROM messages 
-ORDER BY RANDOM() 
-LIMIT 1;
-
 -- name: ListRandomMessages :many
 SELECT id, content, created_at
 FROM messages
