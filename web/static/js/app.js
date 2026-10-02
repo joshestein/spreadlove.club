@@ -16,6 +16,7 @@ function loadMore() {
 async function nextMessage() {
   if (queue.length === 0) await loadMore();
   $message.textContent = queue.shift()?.content ?? 'You are perfect as you are.';
+  $message.classList.remove('loading');
   if (queue.length <= 2) loadMore();
 }
 
