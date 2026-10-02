@@ -90,12 +90,12 @@ function displayMessages(messages) {
                     </div>
                     <div class="message-actions">
                         <button 
-                            class="btn-approve"
+                            class="btn btn-approve"
                             onclick="approveMessage(${msg.id})">
                             ✓ Approve
                         </button>
                         <button 
-                            class="btn-reject"
+                            class="btn btn-reject"
                             onclick="rejectMessage(${msg.id})">
                             ✗ Reject
                         </button>
