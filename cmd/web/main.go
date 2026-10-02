@@ -28,9 +28,8 @@ type App struct {
 }
 
 type MessageResponse struct {
-	ID        int64     `json:"id"`
-	Content   string    `json:"content"`
-	CreatedAt time.Time `json:"created_at"`
+	ID      int64  `json:"id"`
+	Content string `json:"content"`
 }
 
 type PendingMessageResponse struct {
@@ -63,7 +62,7 @@ func main() {
 	r.Use(middleware.Timeout(60 * time.Second))
 
 	r.Route("/api", func(r chi.Router) {
-		r.Get("/message", app.handleGetRandomMessage)
+		r.Get("/messages", app.handleGetRandomMessages)
 		r.Post("/message", app.handleSubmitMessage)
 
 		r.Route("/admin", func(r chi.Router) {
@@ -133,23 +132,23 @@ func basicAuth(next http.Handler) http.Handler {
 	})
 }
 
-func (app *App) handleGetRandomMessage(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	msg, err := app.queries.GetRandomMessage(ctx)
-
+func (app *App) handleGetRandomMessages(w http.ResponseWriter, r *http.Request) {
+	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
 	if err != nil {
-		log.Printf("Error fetching random message: %v", err)
+		limit = 10
+	}
+	limit = max(1, min(limit, 50))
+
+	msgs, err := app.queries.ListRandomMessages(r.Context(), int64(limit))
+	if err != nil {
+		log.Printf("Error fetching random messages: %v", err)
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
 
-	response := MessageResponse{
-		ID:      msg.ID,
-		Content: msg.Content,
-	}
-
-	if msg.CreatedAt.Valid {
-		response.CreatedAt = msg.CreatedAt.Time
+	response := make([]MessageResponse, len(msgs))
+	for i, msg := range msgs {
+		response[i] = MessageResponse{ID: msg.ID, Content: msg.Content}
 	}
 
 	w.Header().Set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate")
