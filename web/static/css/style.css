@@ -1,3 +1,16 @@
+:root {
+  --bg: #fbfaf4;
+  --surface: #fff;
+  --accent: #ac4518;
+  --text: #333;
+  --muted: #666;
+  --border: #dadcde;
+  --success: #2e7d32;
+  --danger: #c33;
+  --danger-bg: #fee;
+  --radius: 4px;
+}
+
 *,
 *::before,
 *::after {
