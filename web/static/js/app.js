@@ -1,22 +1,24 @@
 const $message = document.getElementById('message');
 const $refreshButton = document.getElementById('refresh');
 
-async function fetchMessage() {
-  $message.textContent = 'Loading...';
+let queue = [];
+let pending = null;
 
-  try {
-    const response = await fetch('/api/message');
-    if (!response.ok) {
-      throw new Error('Failed to fetch message');
-    }
-
-    const data = await response.json();
-    $message.textContent = data.content;
-  } catch (error) {
-    $message.textContent = 'You are perfect as you are.';
-  }
+function loadMore() {
+  pending ??= fetch('/api/messages')
+    .then((response) => (response.ok ? response.json() : []))
+    .then((messages) => queue.push(...messages))
+    .catch(() => {})
+    .finally(() => (pending = null));
+  return pending;
 }
 
-$refreshButton.addEventListener('click', fetchMessage);
+async function nextMessage() {
+  if (queue.length === 0) await loadMore();
+  $message.textContent = queue.shift()?.content ?? 'You are perfect as you are.';
+  if (queue.length <= 2) loadMore();
+}
 
-fetchMessage();
+$refreshButton.addEventListener('click', nextMessage);
+
+nextMessage();
