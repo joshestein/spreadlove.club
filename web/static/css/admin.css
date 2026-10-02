@@ -59,6 +59,7 @@
   }
 
   .message-content {
+    font-family: var(--font-serif);
     font-size: 1.125rem;
     color: #333;
     margin-bottom: 0.75rem;
