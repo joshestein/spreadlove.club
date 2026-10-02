@@ -8,14 +8,15 @@
     <link rel="stylesheet" href="/static/css/style.css" />
   </head>
   <body>
-    <form class="center" action="/api/message" method="post">
+    <form class="submit-form container center" action="/api/message" method="post">
       <textarea
         name="content"
         required
         placeholder="What do you want others to know?"
       ></textarea>
 
-      <button type="submit">Spread Love</button>
+      <button type="submit" class="btn">Spread Love</button>
+      <p id="status" role="status" hidden></p>
     </form>
     <nav>
       <a href="/">Back</a>
