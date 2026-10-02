@@ -1,9 +1,12 @@
-.hidden {
-  display: none;
-}
-
-#login-form.hidden {
-  display: none;
+.login-error {
+  width: 100%;
+  max-width: 25rem;
+  margin-bottom: 1.25rem;
+  padding: 0.75rem;
+  border-radius: var(--radius);
+  background-color: var(--danger-bg);
+  color: var(--danger);
+  font-size: 0.875rem;
 }
 
 #login-form {
