@@ -1,6 +1,6 @@
 :root {
   --surface: #fff;
-  --accent: #ac4518;
+  --accent: #8e2c5c;
   --muted: #666;
   --border: #dadcde;
   --danger: #c33;
@@ -31,7 +31,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100svh;
-  background-color: #fbfaf4;
+  background-color: #faf7f9;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
