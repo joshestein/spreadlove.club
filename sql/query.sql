@@ -1,5 +1,5 @@
 -- name: ListRandomMessages :many
-SELECT id, content, created_at
+SELECT id, content
 FROM messages
 ORDER BY RANDOM()
 LIMIT ?;
