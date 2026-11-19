@@ -14,7 +14,7 @@ After=network.target
 [Service]
 Type=simple
 WorkingDirectory=/home/<VPS_USER>/spreadlove
-ExecStart=/home/<VPS_USER>/spreadlove/spreadlove
+ExecStart=/home/<VPS_USER>/spreadlove/bin/spreadlove
 User=<VPS_USER>
 Group=<VPS_USER>
 Restart=always
