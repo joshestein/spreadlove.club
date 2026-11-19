@@ -22,8 +22,8 @@ jobs:
 
       - name: Build Go application
         run: |
-          go build -o bin/spreadlove ./cmd/web
-          go build -o bin/spreadlove_mailer ./cmd/mailer
+          go build -trimpath -o bin/spreadlove ./cmd/web
+          go build -trimpath -o bin/spreadlove_mailer ./cmd/mailer
           mkdir -p dist
           cp -r bin dist/
           cp -r web dist/
