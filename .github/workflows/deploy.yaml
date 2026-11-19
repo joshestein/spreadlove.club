@@ -30,6 +30,11 @@ jobs:
         with:
           go-version: stable
 
+      - name: Vet and test
+        run: |
+          go vet ./...
+          go test ./...
+
       - name: Build Go application
         run: |
           go build -trimpath -o bin/spreadlove ./cmd/web
