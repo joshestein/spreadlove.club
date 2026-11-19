@@ -52,30 +52,34 @@ jobs:
           name: spreadlove-dist
           path: .
 
-      - name: Deploy to VPS using rsync
-        uses: easingthemes/ssh-deploy@main
-        with:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          ARGS: "-zv"
-          SOURCE: "./"
-          TARGET: /home/${{ secrets.VPS_USER }}/spreadlove
-          REMOTE_HOST: ${{ secrets.VPS_HOST }}
-          REMOTE_USER: ${{ secrets.VPS_USER }}
-          SCRIPT_BEFORE: |
-            mkdir -p /home/${{ secrets.VPS_USER }}/spreadlove
-          SCRIPT_AFTER: |
-            chmod +x /home/${{ secrets.VPS_USER }}/spreadlove/bin/spreadlove
-            chmod +x /home/${{ secrets.VPS_USER }}/spreadlove/bin/spreadlove_mailer
+      # Artifacts drop file modes.
+      - name: Restore permissions
+        run: chmod 755 dist/bin/spreadlove dist/bin/spreadlove_mailer
 
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_KNOWN_HOSTS: ${{ secrets.REMOTE_KNOWN_HOSTS }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          install -d -m 700 ~/.ssh
+          umask 077
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          printf '%s\n' "$REMOTE_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          cat > ~/.ssh/config <<EOF
+          Host vps
+            HostName $VPS_HOST
+            User $VPS_USER
+            IdentityFile ~/.ssh/deploy_key
+            IdentitiesOnly yes
+            StrictHostKeyChecking yes
+            BatchMode yes
+          EOF
+
+      - name: Deploy to VPS using rsync
+        run: rsync -rlptvz dist/ vps:spreadlove/
+
+      # Needs NOPASSWD for this command in /etc/sudoers.d/spreadlove.
       - name: Restart Go service on VPS
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            # Ensure the user used for SSH has NOPASSWD for this specific command in /etc/sudoers.d/
-            # You can `sudo EDITOR=vim visudo`
-            # Then add a line like:
-            # vps_user ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart spreadlove.service
-            sudo systemctl restart spreadlove.service
+        run: ssh vps 'sudo systemctl restart spreadlove.service'
