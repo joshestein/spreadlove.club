@@ -48,6 +48,7 @@ jobs:
         with:
           name: spreadlove-dist
           path: dist/
+          retention-days: 1
 
   deploy:
     needs: build
